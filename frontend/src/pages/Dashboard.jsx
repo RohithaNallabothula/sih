@@ -1,38 +1,25 @@
-import { useEffect, useState } from "react";
-import { fetchSamples } from "../api/api";
+import React from "react";
+import { waterData } from "../data/waterData";
+
+import Card from "../components/Card";
+import Table from "../components/Table";
 
 export default function Dashboard() {
-  const [samples, setSamples] = useState([]);
-
-  useEffect(() => {
-    fetchSamples().then(setSamples);
-  }, []);
+  const latest = waterData[waterData.length - 1]; // latest entry
 
   return (
-    <div>
-      <h2>Recent Water Quality Samples</h2>
-      <table border="1">
-        <thead>
-          <tr>
-            <th>Time</th><th>pH</th><th>Turbidity</th><th>TDS</th>
-            <th>Nitrate</th><th>Fluoride</th><th>Arsenic</th><th>E. coli</th>
-          </tr>
-        </thead>
-        <tbody>
-          {samples.map(s => (
-            <tr key={s._id}>
-              <td>{new Date(s.timestamp).toLocaleString()}</td>
-              <td>{s.pH}</td>
-              <td>{s.turbidity}</td>
-              <td>{s.tds}</td>
-              <td>{s.nitrate}</td>
-              <td>{s.fluoride}</td>
-              <td>{s.arsenic}</td>
-              <td>{s.ecoli}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div className="p-6 space-y-6">
+      <h1 className="text-3xl font-bold text-gray-700">💧 Water Quality Dashboard</h1>
+
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+        <Card title="pH" value={latest.pH} />
+        <Card title="Turbidity" value={latest.turbidity} unit=" NTU" />
+        <Card title="TDS" value={latest.tds} unit=" mg/L" />
+        <Card title="Nitrate" value={latest.nitrate} unit=" mg/L" />
+        <Card title="E. coli" value={latest.ecoli} unit=" CFU/100mL" />
+      </div>
+
+      <Table data={waterData} />
     </div>
   );
 }
